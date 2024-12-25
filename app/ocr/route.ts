@@ -10,11 +10,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await Tesseract.recognize(image, 'spa', {
-      logger: m => console.log(m),
+      logger: (m: any) => console.log(m),
     });
 
     return NextResponse.json({ text: result.data.text });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return NextResponse.json({ error: 'Error processing image', details: error.message }, { status: 500 });
   }
