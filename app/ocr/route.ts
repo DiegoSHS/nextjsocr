@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Tesseract, { Logger } from 'tesseract.js';
+import Tesseract from 'tesseract.js';
+
+interface TesseractLogger {
+  status: string;
+  progress: number;
+}
 
 export async function POST(req: NextRequest) {
   const { image } = await req.json();
@@ -10,7 +15,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await Tesseract.recognize(image, 'spa', {
-      logger: (m: Logger) => console.log(m),
+      logger: (m: TesseractLogger) => console.log(m),
     });
 
     return NextResponse.json({ text: result.data.text });
