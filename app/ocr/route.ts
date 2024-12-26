@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Tesseract from 'tesseract.js';
+import Tesseract, { Logger } from 'tesseract.js';
 
 export async function POST(req: NextRequest) {
   const { image } = await req.json();
@@ -10,12 +10,12 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await Tesseract.recognize(image, 'spa', {
-      logger: (m: any) => console.log(m),
+      logger: (m: Logger) => console.log(m),
     });
 
     return NextResponse.json({ text: result.data.text });
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Error processing image', details: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Error processing image', details: (error as Error).message }, { status: 500 });
   }
 }
