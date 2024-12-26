@@ -7,14 +7,18 @@ interface TesseractLogger {
 }
 
 export async function POST(req: NextRequest) {
-  const data = await req.json();
-  console.log(data)
-  if (!data.image) {
-    return NextResponse.json({ error: 'No image provided' }, { status: 400 });
+  const formData = await req.formData();
+  const file = formData.get('image');
+
+  if (!file || !(file instanceof Blob)) {
+    return NextResponse.json({ error: 'No image provided or invalid file type' }, { status: 400 });
   }
 
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
   try {
-    const result = await Tesseract.recognize(data.image, 'spa', {
+    const result = await Tesseract.recognize(buffer, 'spa', {
       logger: (m: TesseractLogger) => console.log(m),
     });
 
