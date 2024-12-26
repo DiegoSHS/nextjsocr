@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await Tesseract.recognize(data image, 'spa', {
+    const result = await Tesseract.recognize(data.image, 'spa', {
       logger: (m: TesseractLogger) => console.log(m),
     });
 
