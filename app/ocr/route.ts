@@ -7,7 +7,7 @@ interface TesseractLogger {
 }
 
 export async function POST(req: NextRequest) {
-  const { image } = await req.json();
+  const image = await req.json();
 
   if (!image) {
     return NextResponse.json({ error: 'No image provided' }, { status: 400 });
