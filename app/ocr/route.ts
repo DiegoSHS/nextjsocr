@@ -7,30 +7,10 @@ interface TesseractLogger {
 }
 
 export async function POST(req: NextRequest) {
-  const formData = await req.formData();
-  const file = formData.get('image');
-
-  if (!file || !(file instanceof Blob)) {
-    return NextResponse.json({ error: 'No image provided or invalid file type' }, { status: 400 });
-  }
-
-  // Validación de tipo de archivo
-  const fileType = file.type;
-  if (!fileType.startsWith('image/')) {
-    return NextResponse.json({ error: 'Invalid file type. Only images are allowed.' }, { status: 400 });
-  }
-
-  // Validación de tamaño de archivo (ejemplo: máximo 5MB)
-  const maxSize = 5 * 1024 * 1024;
-  if (file.size > maxSize) {
-    return NextResponse.json({ error: `File size exceeds the limit of ${maxSize} bytes` }, { status: 400 });
-  }
-
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-
+  console.log('Processing image:', await req.json());
+  const { image }: { image: string } = await req.json();
   try {
-    const result = await Tesseract.recognize(buffer, 'spa', {
+    const result = await Tesseract.recognize(image, 'spa', {
       logger: (m: TesseractLogger) => console.log(m),
     });
 
