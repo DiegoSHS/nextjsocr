@@ -9,9 +9,8 @@ interface TesseractLogger {
 export async function POST(req: NextRequest) {
   const { image }: { image: string } = await req.json();
   try {
-    const result = await Tesseract.recognize(image, 'spa', {
-      logger: (m: TesseractLogger) => console.log(m),
-    });
+    const worker = await Tesseract.createWorker();
+    const result = await worker.recognize(image);
 
     return NextResponse.json({ text: result.data.text });
   } catch (error) {
