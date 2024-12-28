@@ -7,7 +7,6 @@ interface TesseractLogger {
 }
 
 export async function POST(req: NextRequest) {
-  console.log('Processing image:', await req.json());
   const { image }: { image: string } = await req.json();
   try {
     const result = await Tesseract.recognize(image, 'spa', {
