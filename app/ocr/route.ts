@@ -1,21 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { recognize } from 'tesseract.js';
-interface TesseractLogger {
-  status: string;
-  progress: number;
-}
+import { createWorker } from 'tesseract.js';
 
 export async function POST(req: NextRequest) {
   const { image }: { image: string } = await req.json();
   try {
-    console.log('./node_modules/tesseract.js/src/worker/node/index.js')
-    const result = await recognize(image, 'spa', {
-      logger: (m: TesseractLogger) => console.log(m),
+    const imageBuffer = Buffer.from(image, 'base64');
+    const worker = await createWorker('spa', 1, {
+      workerPath: "./node_modules/tesseract.js/src/worker-script/node/index.js"
     });
-
+    const result = await worker.recognize(imageBuffer);
+    await worker.terminate();
     return NextResponse.json({ text: result.data.text });
   } catch (error) {
-    console.error('Error processing image:', error);
-    return NextResponse.json({ error: 'Error processing image', details: (error as Error).message }, { status: 500 });
+    console.error('Error processing image:');
+    return NextResponse.json({ error: 'Error processing image', text: (error as Error).message }, { status: 500 });
   }
 }
