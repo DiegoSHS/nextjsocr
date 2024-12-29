@@ -4,6 +4,7 @@ import { createWorker } from 'tesseract.js';
 export async function POST(req: NextRequest) {
   const { image }: { image: string } = await req.json();
   try {
+    console.log('Processing image...');
     const imageBuffer = Buffer.from(image, 'base64');
     const worker = await createWorker('spa', 1, {
       workerPath: "./node_modules/tesseract.js/src/worker-script/node/index.js"
